@@ -31,7 +31,7 @@ public class TitleBar extends HBox {
     }
 
     private ImageView getIcon() {
-        InputStream is = this.getClass().getClassLoader().getResourceAsStream("jexplorer.png");
+        InputStream is = this.getClass().getClassLoader().getResourceAsStream("imgs/jexplorer.png");
         Image image = new Image(is, 24, 24, true, true);
         ImageView iv = new ImageView(image);
         return iv;

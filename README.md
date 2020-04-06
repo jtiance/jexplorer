@@ -7,7 +7,7 @@
 ## How to run:
 
 1. run build.sh in root of the project.
-2. There will be two folders: target & dist. Which means you have to way to run the app:
+2. There will be two folders: target & dist. Which means you have two ways to run the app:
 - In target folder: jexplorer-0.0.1-SNAPSHOT.jar. Run the following command to start it:
 ```
 java -jar jexplorer-0.0.1-SNAPSHOT.jar
