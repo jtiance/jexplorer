@@ -24,13 +24,14 @@ public class GeneralFolder extends VBox {
 
 
     public GeneralFolder() {
-        this.setStyle("-fx-background-color: aliceblue");
+        this.setStyle("-fx-background-color: rgba(209,255,248,0.07)");
         this.setPrefWidth(250d);
         this.setMinWidth(100d);
         this.setMaxWidth(300d);
 
         this.setAlignment(Pos.TOP_LEFT);
-        this.setPadding(new Insets(20, 40, 30, 10));
+//        this.setSpacing(6d);
+        this.setPadding(new Insets(20, 10, 30, 10));
 
         //计算机, 特殊的全展现界面
         Label label1 = initFolder("计算机", NavigationPathBar._COMPUTER, "imgs/folder/computer.png");
@@ -78,9 +79,18 @@ public class GeneralFolder extends VBox {
         ImageView iv = new ImageView(new Image(is, 16, 16, true, false));
         Label label = new Label(folderName, iv);
         label.setFont(new Font(14));
+        label.setPrefHeight(30d);
+
+        label.setStyle("-fx-background-color: rgba(209,255,248,0.07)");
         label.prefWidthProperty().bind(this.widthProperty());
         label.setOnMouseClicked((event) -> navigationPathBar.changePath(folderPath));
-        setMargin(label, new Insets(6));
+
+        label.setOnMouseEntered((event) -> {
+            label.setStyle("-fx-background-color: #c2ff07; -fx-text-fill: whitesmoke;");
+        });
+        label.setOnMouseExited((event) -> {
+            label.setStyle("-fx-background-color: rgba(209,255,248,0.07)");
+        });
         return label;
     }
 }
