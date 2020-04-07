@@ -8,6 +8,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.TilePane;
@@ -37,7 +38,10 @@ public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> 
 
     @Override
     public void handle(MouseEvent event) {
-        selectedOnes.forEach(e -> e.setStyle(""));
+        if (event.getButton() == MouseButton.PRIMARY) {
+            selectedOnes.forEach(e -> e.setStyle(""));
+        }
+
     }
 
     @Autowired
@@ -54,14 +58,14 @@ public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> 
 
                 files.clear();
 
-                File[] files = new File((String) evt.getNewValue()).listFiles();
-                if (files.length == 0) {
+                File[] subFiles = new File((String) evt.getNewValue()).listFiles();
+                if (subFiles.length == 0) {
                     FileBlockBody.this.getChildren().setAll(FileBlockBody.this.files);
                     return;
                 }
 
                 //排序, 首先文件夹, 之后按名称, 以后会自定义排序
-                Arrays.sort(files, (o1, o2) -> {
+                Arrays.sort(subFiles, (o1, o2) -> {
                     if (o1.isDirectory() && o2.isDirectory()) {
                         return o1.getName().compareTo(o2.getName());
                     } else if (o1.isDirectory()) {
@@ -75,7 +79,7 @@ public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> 
                 double imageDisplaySize = fileDisplaySize * 0.8;
                 double imageCorner = fileDisplaySize * 0.1;
 
-                for (File subFile : files) {
+                for (File subFile : subFiles) {
                     if (!preferenceConfig.isShowHidden() && subFile.isHidden()) {
                         continue;
                     }
@@ -113,17 +117,56 @@ public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> 
 
                                 }
                             } else if (event.getClickCount() == 1) {
-
                                 AnchorPane newSelected = (AnchorPane) event.getSource();
-                                if (!event.isShortcutDown()) {
+                                if (event.isShortcutDown()) {//ctrl的多选
+                                    newSelected.setStyle("-fx-background-color: aquamarine");
+                                    selectedOnes.add(newSelected);
+                                } else if (event.isShiftDown()) { //shift的多选
+                                    if (selectedOnes.isEmpty()) {
+                                        newSelected.setStyle("-fx-background-color: aquamarine");
+                                        selectedOnes.add(newSelected);
+
+                                    } else {
+                                        AnchorPane first = selectedOnes.get(0);
+
+                                        if (selectedOnes.size() > 1) {
+                                            for (int i = 1; i < selectedOnes.size(); i++) {
+                                                AnchorPane toRemove = selectedOnes.get(i);
+                                                toRemove.setStyle("");
+                                            }
+                                            selectedOnes.clear();
+                                            selectedOnes.add(first);
+                                        }
+
+                                        boolean begin = false;
+                                        int count = 0;
+                                        for (AnchorPane toSelect : FileBlockBody.this.files) {
+                                            if (!begin && (toSelect == first || toSelect == newSelected)) {
+                                                begin = true;
+                                            }
+
+                                            if (begin) {
+                                                toSelect.setStyle("-fx-background-color: aquamarine");
+                                                selectedOnes.add(toSelect);
+                                                count++;
+                                            }
+                                            if (toSelect == first && toSelect == newSelected) {
+                                                break;
+                                            }
+                                            if (count > 1 && (toSelect == first || toSelect == newSelected)) {
+                                                break;
+                                            }
+                                        }
+                                    }
+                                } else {//没有按键盘
                                     if (!selectedOnes.isEmpty()) {
                                         selectedOnes.forEach(e -> e.setStyle(""));
                                     }
                                     selectedOnes.clear();
-                                }
 
-                                newSelected.setStyle("-fx-background-color: aquamarine");
-                                selectedOnes.add(newSelected);
+                                    newSelected.setStyle("-fx-background-color: aquamarine");
+                                    selectedOnes.add(newSelected);
+                                }
                             }
 
                             event.consume();
@@ -133,7 +176,12 @@ public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> 
                     FileBlockBody.this.files.add(ap);
 
                 }
-                FileBlockBody.this.getChildren().setAll(FileBlockBody.this.files);
+
+                FileBlockBody.this.
+
+                        getChildren().
+
+                        setAll(FileBlockBody.this.files);
             }
         });
     }
