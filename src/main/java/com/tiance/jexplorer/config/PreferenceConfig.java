@@ -12,11 +12,31 @@ public class PreferenceConfig {
      */
     private boolean showHidden;
 
+    private int fileDisplayStyle; //1: 列表; 2: 块
+
+    private int fileDisplaySize; // 显示大小, 1,2,3,4,5
+
     public boolean isShowHidden() {
         return showHidden;
     }
 
     public void setShowHidden(boolean showHidden) {
         this.showHidden = showHidden;
+    }
+
+    public int getFileDisplayStyle() {
+        return fileDisplayStyle;
+    }
+
+    public void setFileDisplayStyle(int fileDisplayStyle) {
+        this.fileDisplayStyle = fileDisplayStyle;
+    }
+
+    public int getFileDisplaySize() {
+        return fileDisplaySize;
+    }
+
+    public void setFileDisplaySize(int fileDisplaySize) {
+        this.fileDisplaySize = fileDisplaySize;
     }
 }

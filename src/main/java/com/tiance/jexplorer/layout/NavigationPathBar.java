@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
 import java.util.Map;
@@ -109,6 +110,10 @@ public class NavigationPathBar extends HBox {
 
 
         pcs.firePropertyChange(new PropertyChangeEvent(this, "path", this.path, path));
+    }
+
+    public void listenPath(PropertyChangeListener propertyChangeListener) {
+        pcs.addPropertyChangeListener("path", propertyChangeListener);
     }
 
 
