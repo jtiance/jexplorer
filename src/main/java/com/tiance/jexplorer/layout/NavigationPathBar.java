@@ -47,7 +47,7 @@ public class NavigationPathBar extends HBox {
         path.addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if(NavigationPathBar.this.addToPrev) {
+                if (NavigationPathBar.this.addToPrev) {
                     addToPrev(oldValue);
                 }
 
@@ -113,38 +113,50 @@ public class NavigationPathBar extends HBox {
     }
 
     private void listButtonAsPath(String path) {
-        String[] split = path.split("/");
-        StringBuilder sb = new StringBuilder();
-        btnList.clear();
-
-        for (String s : split) {
-            if (sb.toString().equals("/")) {
-                sb.append(s);
-            } else {
-                sb.append("/").append(s);
-            }
-
-            String folder = sb.toString();
-            Button button = btnMap.get(sb.toString());
+        if (path.equals("/")) {
+            btnList.clear();
+            Button button = btnMap.get(path);
             if (button == null) {
-                if (folder.equals("/")) {
-                    button = new Button("根目录");
-                } else if (folder.equals(System.getenv("HOME"))) {
-                    button = new Button("主目录");
-                } else {
-                    button = new Button(s);
-                }
+                button = new Button("根目录");
                 button.setOnMouseClicked((event) -> {
-                    changePath(folder, true);
+                    changePath(path, true);
                 });
+                btnMap.put(path, button);
             }
-
-
-            if (folder.equals(System.getenv("HOME"))) {
-                btnList.clear();
-            }
-            btnMap.put(folder, button);
             btnList.add(button);
+        } else {
+            String[] split = path.split("/");
+            StringBuilder sb = new StringBuilder();
+            btnList.clear();
+
+            for (String s : split) {
+                if (sb.toString().equals("/")) {
+                    sb.append(s);
+                } else {
+                    sb.append("/").append(s);
+                }
+
+                String folder = sb.toString();
+                Button button = btnMap.get(sb.toString());
+                if (button == null) {
+                    if (folder.equals("/")) {
+                        button = new Button("根目录");
+                    } else if (folder.equals(System.getenv("HOME"))) {
+                        button = new Button("主目录");
+                    } else {
+                        button = new Button(s);
+                    }
+                    button.setOnMouseClicked((event) -> {
+                        changePath(folder, true);
+                    });
+                    btnMap.put(folder, button);
+                }
+                if (folder.equals(System.getenv("HOME"))) {
+                    btnList.clear();
+                }
+
+                btnList.add(button);
+            }
         }
     }
 

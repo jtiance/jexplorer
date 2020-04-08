@@ -24,7 +24,7 @@ public class NavigationBarPrevButton extends NavigationBarButton {
 
         render();
 
-        navigationPathBar.addPathChangeListener(new PropertyChangeListener() {
+        this.navigationPathBar.addPathChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 render();
