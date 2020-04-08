@@ -83,7 +83,7 @@ public class GeneralFolder extends VBox {
 
         label.setStyle("-fx-background-color: rgba(209,255,248,0.07)");
         label.prefWidthProperty().bind(this.widthProperty());
-        label.setOnMouseClicked((event) -> navigationPathBar.changePath(folderPath));
+        label.setOnMouseClicked((event) -> navigationPathBar.changePath(folderPath, true));
 
         label.setOnMouseEntered((event) -> {
             label.setStyle("-fx-background-color: #c2ff07; -fx-text-fill: whitesmoke;");

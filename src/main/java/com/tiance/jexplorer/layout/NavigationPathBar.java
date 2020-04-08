@@ -15,6 +15,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 @Component
@@ -26,9 +27,14 @@ public class NavigationPathBar extends HBox {
 
     private Map<String, Button> btnMap = new HashMap<>();//复用的按钮
 
-    private ObservableList<Object> btnList = FXCollections.observableArrayList();//待显示的按钮
+    private ObservableList<Button> btnList = FXCollections.observableArrayList();//待显示的按钮
 
     private SimpleStringProperty path = new SimpleStringProperty();//当前路径
+
+    private boolean addToPrev;
+
+    private LinkedList<String> prevPaths = new LinkedList<>();
+    private LinkedList<String> nextPaths = new LinkedList<>();
 
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
@@ -41,6 +47,10 @@ public class NavigationPathBar extends HBox {
         path.addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if(NavigationPathBar.this.addToPrev) {
+                    addToPrev(oldValue);
+                }
+
                 if (path.get().equals(_COMPUTER)) {
                     initDefaultButtons();
                 } else {
@@ -49,9 +59,9 @@ public class NavigationPathBar extends HBox {
 
                 for (int i = 0; i < btnList.size(); i++) {
                     if (i == btnList.size() - 1) {
-                        ((Button) btnList.get(i)).setStyle("-fx-background-color: aqua");
+                        btnList.get(i).setStyle("-fx-background-color: #c2ff07");
                     } else {
-                        ((Button) btnList.get(i)).setStyle("-fx-background-color: #e0ffd8");
+                        btnList.get(i).setStyle("-fx-background-color: #f2fff3");
                     }
                 }
 
@@ -60,11 +70,41 @@ public class NavigationPathBar extends HBox {
         });
     }
 
+    public boolean hasValidPrevs() {
+        return prevPaths.size() > 0;
+    }
+
+    public boolean hasValidNexts() {
+        return nextPaths.size() > 0;
+    }
+
+    public String popPrev() {
+        return prevPaths.remove(prevPaths.size() - 1);
+    }
+
+    public String popNext() {
+        return nextPaths.remove(nextPaths.size() - 1);
+    }
+
+    private void addToPrev(String oldPath) {
+        prevPaths.add(oldPath);
+        if (prevPaths.size() > 20) {
+            prevPaths.remove(0);
+        }
+    }
+
+    public void addCurPathToNext() {
+        nextPaths.add(this.path.get());
+        if (nextPaths.size() > 20) {
+            nextPaths.remove(0);
+        }
+    }
+
     private void initDefaultButtons() {
         Button button = btnMap.get(_COMPUTER);
         if (button == null) {
             button = new Button("计算机");
-            button.setStyle("-fx-background-color: aqua");
+            button.setStyle("-fx-background-color: #c2ff07");
             btnMap.put(_COMPUTER, button);
         }
 
@@ -94,7 +134,11 @@ public class NavigationPathBar extends HBox {
                 } else {
                     button = new Button(s);
                 }
+                button.setOnMouseClicked((event) -> {
+                    changePath(folder, true);
+                });
             }
+
 
             if (folder.equals(System.getenv("HOME"))) {
                 btnList.clear();
@@ -104,15 +148,16 @@ public class NavigationPathBar extends HBox {
         }
     }
 
-    public void changePath(String path) {
+    public void changePath(String path, boolean addToPrev) {
         logger.info("change path: {}", path);
-        this.path.set(path);
 
+        this.addToPrev = addToPrev;
+        this.path.set(path);
 
         pcs.firePropertyChange(new PropertyChangeEvent(this, "path", this.path, path));
     }
 
-    public void listenPath(PropertyChangeListener propertyChangeListener) {
+    public void addPathChangeListener(PropertyChangeListener propertyChangeListener) {
         pcs.addPropertyChangeListener("path", propertyChangeListener);
     }
 

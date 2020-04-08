@@ -52,7 +52,7 @@ public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> 
 
         this.setOnMouseClicked(this);
 
-        navigationPathBar.listenPath(new PropertyChangeListener() {
+        navigationPathBar.addPathChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
 
@@ -112,7 +112,7 @@ public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> 
                                 AnchorPane ap = (AnchorPane) event.getSource();
                                 File file = (File) ap.getUserData();
                                 if (file.isDirectory()) {
-                                    navigationPathBar.changePath(subFile.getAbsolutePath());
+                                    navigationPathBar.changePath(subFile.getAbsolutePath(), true);
                                 } else if (file.isFile()) {
 
                                 }
