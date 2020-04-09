@@ -6,6 +6,7 @@ import com.tiance.jexplorer.config.PreferenceConfig;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -19,7 +20,7 @@ import java.io.InputStream;
 @Component
 public class ChiefBody extends VBox {
 
-    private HBox foldersInHome = new HBox();
+    private FlowPane foldersInHome = new FlowPane();
 
     private PreferenceConfig preferenceConfig;
 
@@ -42,11 +43,10 @@ public class ChiefBody extends VBox {
         File homeFolder = new File(home);
         File[] files = homeFolder.listFiles();
 
-        double fileDisplaySize = FileDisplaySizeMapper.getBlockSize(preferenceConfig.getFileDisplaySize());
 
         for (File file : files) {
             if (PopularFolder.contains(file.getName())) {
-                AnchorPane anchorPane = initFolder(file, file.getAbsolutePath(), PopularFolder.getImagePath(file.getName()), fileDisplaySize);
+                AnchorPane anchorPane = initFolder(file, file.getAbsolutePath(), PopularFolder.getImagePath(file.getName()), 160d);
                 foldersInHome.getChildren().add(anchorPane);
             }
         }

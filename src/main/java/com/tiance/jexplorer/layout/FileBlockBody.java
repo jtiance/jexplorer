@@ -57,6 +57,9 @@ public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> 
         navigationPathBar.addPathChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
+                if (evt.getNewValue().equals(NavigationPathBar._COMPUTER)) {
+                    return;
+                }
 
                 files.clear();
 

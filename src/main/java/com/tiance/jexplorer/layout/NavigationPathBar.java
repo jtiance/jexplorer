@@ -29,7 +29,7 @@ public class NavigationPathBar extends HBox {
 
     private ObservableList<Button> btnList = FXCollections.observableArrayList();//待显示的按钮
 
-    private SimpleStringProperty path = new SimpleStringProperty();//当前路径
+    private SimpleStringProperty path = new SimpleStringProperty(_COMPUTER);//当前路径
 
     private boolean addToPrev;
 

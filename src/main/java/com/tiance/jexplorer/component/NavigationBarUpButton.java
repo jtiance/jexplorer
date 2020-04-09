@@ -28,7 +28,11 @@ public class NavigationBarUpButton extends NavigationBarButton {
             public void propertyChange(PropertyChangeEvent evt) {
 
                 String newValue = (String) evt.getNewValue();
-                curPath = new File(newValue);
+                if (newValue.equals(NavigationPathBar._COMPUTER)) {
+                    curPath = null;
+                } else {
+                    curPath = new File(newValue);
+                }
                 render(newValue);
             }
         });
@@ -46,7 +50,7 @@ public class NavigationBarUpButton extends NavigationBarButton {
 
     private void render(String path) {
 
-        if (path.equals("/")) {
+        if (path.equals("/") || path.equals(NavigationPathBar._COMPUTER)) {
             this.setDisabled(true);
             this.setStyle("-fx-background-color: darkgray");
         } else {

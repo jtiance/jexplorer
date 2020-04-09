@@ -32,8 +32,11 @@ public class NavigationBarPrevButton extends NavigationBarButton {
         });
 
         this.setOnMouseClicked(e -> {
-            this.navigationPathBar.addCurPathToNext();
-            this.navigationPathBar.changePath(this.navigationPathBar.popPrev(), false, false);
+            if (this.navigationPathBar.hasValidPrevs()) {
+                this.navigationPathBar.addCurPathToNext();
+                String s = this.navigationPathBar.popPrev();
+                this.navigationPathBar.changePath(s, false, false);
+            }
         });
     }
 

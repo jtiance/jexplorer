@@ -26,7 +26,8 @@ public class NavigationBarNextButton extends NavigationBarButton {
 
         this.setOnMouseClicked(e -> {
             if (this.navigationPathBar.hasValidNexts()) {
-                this.navigationPathBar.changePath(this.navigationPathBar.popNext(), true, false);
+                String s = this.navigationPathBar.popNext();
+                this.navigationPathBar.changePath(s, true, false);
             }
         });
     }

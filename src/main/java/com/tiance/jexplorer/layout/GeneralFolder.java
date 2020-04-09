@@ -1,7 +1,6 @@
 package com.tiance.jexplorer.layout;
 
 import com.tiance.jexplorer.config.PopularFolder;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -21,8 +20,6 @@ import java.util.List;
 public class GeneralFolder extends VBox {
 
     private NavigationPathBar navigationPathBar;
-
-    private SimpleBooleanProperty toComputer = new SimpleBooleanProperty(false);
 
     @Autowired
     public GeneralFolder(NavigationPathBar navigationPathBar) {
@@ -86,14 +83,9 @@ public class GeneralFolder extends VBox {
 
         label.setStyle("-fx-background-color: rgba(209,255,248,0.07)");
         label.prefWidthProperty().bind(this.widthProperty());
-        if (folderPath.equals(NavigationPathBar._COMPUTER)) {
-            label.setOnMouseClicked(e -> {
-                toComputer.setValue(true);
-            });
-        } else {
-            label.setOnMouseClicked(event -> navigationPathBar.changePath(folderPath, true, true));
-            toComputer.setValue(false);
-        }
+        label.setOnMouseClicked(e -> {
+            navigationPathBar.changePath(folderPath, true, true);
+        });
 
         label.setOnMouseEntered((event) -> {
             label.setStyle("-fx-background-color: #c2ff07; -fx-text-fill: whitesmoke;");
@@ -103,10 +95,5 @@ public class GeneralFolder extends VBox {
         });
         return label;
     }
-
-    public SimpleBooleanProperty toComputerProperty() {
-        return toComputer;
-    }
-
 
 }

@@ -30,6 +30,8 @@ public class UI extends Application {
         stage.setScene(scene);
 
         stage.initStyle(StageStyle.DECORATED);
+        stage.setMinWidth(800);
+        stage.setMinHeight(600);
 
         InputStream is = this.getClass().getClassLoader().getResourceAsStream("imgs/jexplorer1.png");
         stage.getIcons().add(new Image(is));
