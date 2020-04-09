@@ -94,7 +94,8 @@ public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> 
                     ap.setPrefWidth(imageDisplaySize);
                     ImageView iv;
                     if (subFile.isDirectory()) {
-                        InputStream is = this.getClass().getClassLoader().getResourceAsStream("imgs/item/folder.png");
+                        String img = subFile.canRead() ? "imgs/item/folder.png" : "imgs/item/folder_locked.png";
+                        InputStream is = this.getClass().getClassLoader().getResourceAsStream(img);
                         iv = new ImageView(new Image(is, imageDisplaySize, imageDisplaySize, true, false));
                     } else {
                         InputStream is = this.getClass().getClassLoader().getResourceAsStream("imgs/item/file.png");
@@ -148,7 +149,9 @@ public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> 
                 AnchorPane ap = (AnchorPane) event.getSource();
                 File file = (File) ap.getUserData();
                 if (file.isDirectory()) {
-                    navigationPathBar.changePath(subFile.getAbsolutePath(), true, true);
+                    if (file.canRead()) {
+                        navigationPathBar.changePath(subFile.getAbsolutePath(), true, true);
+                    }
                 } else if (file.isFile()) {
 
                 }

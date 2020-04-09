@@ -1,6 +1,6 @@
 package com.tiance.jexplorer.layout;
 
-import com.tiance.jexplorer.config.PopularFolder;
+import com.tiance.jexplorer.config.PopularSiderFolder;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -61,8 +61,8 @@ public class GeneralFolder extends VBox {
                 continue;
             }
 
-            if (PopularFolder.contains(file.getName())) {
-                Label label = initFolder(file.getName() + " [" + PopularFolder.translate(file.getName()) + "]", file.getAbsolutePath(), PopularFolder.getImagePath(file.getName()));
+            if (PopularSiderFolder.contains(file.getName())) {
+                Label label = initFolder(file.getName() + " [" + PopularSiderFolder.translate(file.getName()) + "]", file.getAbsolutePath(), PopularSiderFolder.getImagePath(file.getName()));
                 this.getChildren().add(label);
             } else {
                 deferredFolders.add(file);

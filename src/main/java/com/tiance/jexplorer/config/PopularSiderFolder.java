@@ -3,7 +3,7 @@ package com.tiance.jexplorer.config;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PopularFolder {
+public class PopularSiderFolder {
     private static Map<String, String> priorFolder = new HashMap();
     private static Map<String, String> folderPic = new HashMap();
 

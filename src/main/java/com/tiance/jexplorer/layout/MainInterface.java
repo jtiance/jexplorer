@@ -66,13 +66,10 @@ public class MainInterface extends BorderPane {
         scrollPane.setMinWidth(300d);
         scrollPane.setContent(MainInterface.this.chiefBody);
 
-        scrollPane.prefWidthProperty().bind(MainInterface.this.widthProperty().subtract(MainInterface.this.generalFolder.widthProperty()));
-        scrollPane.prefHeightProperty().bind(MainInterface.this.heightProperty().subtract(MainInterface.this.navigationBar.heightProperty()).subtract(commonMenuBar.heightProperty()).subtract(20));
-
-        MainInterface.this.chiefBody.prefWidthProperty().bind(MainInterface.this.widthProperty().subtract(MainInterface.this.generalFolder.widthProperty()).subtract(20));
+        MainInterface.this.chiefBody.prefWidthProperty().bind(MainInterface.this.widthProperty().subtract(MainInterface.this.generalFolder.widthProperty()).subtract(2));
         MainInterface.this.chiefBody.prefHeightProperty().bind(MainInterface.this.heightProperty().subtract(MainInterface.this.navigationBar.heightProperty()).subtract(commonMenuBar.heightProperty()).subtract(20));
 
-        MainInterface.this.fileBlockBody.prefWidthProperty().bind(MainInterface.this.widthProperty().subtract(MainInterface.this.generalFolder.widthProperty()).subtract(20));
+        MainInterface.this.fileBlockBody.prefWidthProperty().bind(MainInterface.this.widthProperty().subtract(MainInterface.this.generalFolder.widthProperty()).subtract(2));
         MainInterface.this.fileBlockBody.prefHeightProperty().bind(MainInterface.this.heightProperty().subtract(MainInterface.this.navigationBar.heightProperty()).subtract(commonMenuBar.heightProperty()).subtract(20));
 
         this.navigationPathBar.addPathChangeListener(new PropertyChangeListener() {
@@ -91,15 +88,5 @@ public class MainInterface extends BorderPane {
 
             }
         });
-
-//        this.generalFolder.toChiefBodyProperty().addListener(new ChangeListener<Boolean>() {
-//            @Override
-//            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean toChiefBody) {
-//                if (toChiefBody) {
-//                    scrollPane.setContent(MainInterface.this.chiefBody);
-//                }
-//            }
-//        });
-
     }
 }
