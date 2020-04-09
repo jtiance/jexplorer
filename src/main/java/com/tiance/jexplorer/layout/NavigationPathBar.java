@@ -33,6 +33,8 @@ public class NavigationPathBar extends HBox {
 
     private boolean addToPrev;
 
+    private boolean clearNext;
+
     private LinkedList<String> prevPaths = new LinkedList<>();
     private LinkedList<String> nextPaths = new LinkedList<>();
 
@@ -66,6 +68,10 @@ public class NavigationPathBar extends HBox {
                 }
 
                 NavigationPathBar.this.getChildren().setAll(btnList.toArray(new Button[btnList.size()]));
+
+                if(NavigationPathBar.this.clearNext) {
+                    NavigationPathBar.this.nextPaths.clear();
+                }
             }
         });
     }
@@ -119,7 +125,7 @@ public class NavigationPathBar extends HBox {
             if (button == null) {
                 button = new Button("根目录");
                 button.setOnMouseClicked((event) -> {
-                    changePath(path, true);
+                    changePath(path, true, true);
                 });
                 btnMap.put(path, button);
             }
@@ -147,7 +153,7 @@ public class NavigationPathBar extends HBox {
                         button = new Button(s);
                     }
                     button.setOnMouseClicked((event) -> {
-                        changePath(folder, true);
+                        changePath(folder, true, true);
                     });
                     btnMap.put(folder, button);
                 }
@@ -160,10 +166,11 @@ public class NavigationPathBar extends HBox {
         }
     }
 
-    public void changePath(String path, boolean addToPrev) {
+    public void changePath(String path, boolean addToPrev, boolean clearNext) {
         logger.info("change path: {}", path);
 
         this.addToPrev = addToPrev;
+        this.clearNext = clearNext;
         this.path.set(path);
 
         pcs.firePropertyChange(new PropertyChangeEvent(this, "path", this.path, path));

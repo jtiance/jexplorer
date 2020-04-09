@@ -26,6 +26,8 @@ import java.util.Arrays;
 @Component
 public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> {
 
+    private NavigationPathBar navigationPathBar;
+
     //当前路径下所有文件
     private ObservableList<AnchorPane> files = FXCollections.observableArrayList();
 
@@ -41,11 +43,11 @@ public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> 
         if (event.getButton() == MouseButton.PRIMARY) {
             selectedOnes.forEach(e -> e.setStyle(""));
         }
-
     }
 
     @Autowired
     public FileBlockBody(NavigationPathBar navigationPathBar) {
+        this.navigationPathBar = navigationPathBar;
         this.setPadding(new Insets(20));
         this.setHgap(40);
         this.setVgap(60);
@@ -105,73 +107,7 @@ public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> 
                     ap.getChildren().add(text);
                     AnchorPane.setTopAnchor(text, imageDisplaySize + 10);
 
-                    ap.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                        @Override
-                        public void handle(MouseEvent event) {
-                            if (event.getClickCount() == 2) {
-                                AnchorPane ap = (AnchorPane) event.getSource();
-                                File file = (File) ap.getUserData();
-                                if (file.isDirectory()) {
-                                    navigationPathBar.changePath(subFile.getAbsolutePath(), true);
-                                } else if (file.isFile()) {
-
-                                }
-                            } else if (event.getClickCount() == 1) {
-                                AnchorPane newSelected = (AnchorPane) event.getSource();
-                                if (event.isShortcutDown()) {//ctrl的多选
-                                    newSelected.setStyle("-fx-background-color: aquamarine");
-                                    selectedOnes.add(newSelected);
-                                } else if (event.isShiftDown()) { //shift的多选
-                                    if (selectedOnes.isEmpty()) {
-                                        newSelected.setStyle("-fx-background-color: aquamarine");
-                                        selectedOnes.add(newSelected);
-
-                                    } else {
-                                        AnchorPane first = selectedOnes.get(0);
-
-                                        if (selectedOnes.size() > 1) {
-                                            for (int i = 1; i < selectedOnes.size(); i++) {
-                                                AnchorPane toRemove = selectedOnes.get(i);
-                                                toRemove.setStyle("");
-                                            }
-                                            selectedOnes.clear();
-                                            selectedOnes.add(first);
-                                        }
-
-                                        boolean begin = false;
-                                        int count = 0;
-                                        for (AnchorPane toSelect : FileBlockBody.this.files) {
-                                            if (!begin && (toSelect == first || toSelect == newSelected)) {
-                                                begin = true;
-                                            }
-
-                                            if (begin) {
-                                                toSelect.setStyle("-fx-background-color: aquamarine");
-                                                selectedOnes.add(toSelect);
-                                                count++;
-                                            }
-                                            if (toSelect == first && toSelect == newSelected) {
-                                                break;
-                                            }
-                                            if (count > 1 && (toSelect == first || toSelect == newSelected)) {
-                                                break;
-                                            }
-                                        }
-                                    }
-                                } else {//没有按键盘
-                                    if (!selectedOnes.isEmpty()) {
-                                        selectedOnes.forEach(e -> e.setStyle(""));
-                                    }
-                                    selectedOnes.clear();
-
-                                    newSelected.setStyle("-fx-background-color: aquamarine");
-                                    selectedOnes.add(newSelected);
-                                }
-                            }
-
-                            event.consume();
-                        }
-                    });
+                    ap.setOnMouseClicked(new MouseClickEventHandler(FileBlockBody.this.navigationPathBar, subFile, selectedOnes, FileBlockBody.this.files));
 
                     FileBlockBody.this.files.add(ap);
 
@@ -184,6 +120,91 @@ public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> 
                         setAll(FileBlockBody.this.files);
             }
         });
+    }
+
+    private static class MouseClickEventHandler implements EventHandler<MouseEvent> {
+
+        private NavigationPathBar navigationPathBar;
+
+        private File subFile;
+
+        private ObservableList<AnchorPane> selectedOnes;
+
+        private ObservableList<AnchorPane> files;
+
+        public MouseClickEventHandler(NavigationPathBar navigationPathBar, File subFile, ObservableList<AnchorPane> selectedOnes, ObservableList<AnchorPane> files) {
+            this.navigationPathBar = navigationPathBar;
+            this.subFile = subFile;
+            this.selectedOnes = selectedOnes;
+            this.files = files;
+        }
+
+        @Override
+        public void handle(MouseEvent event) {
+            if (event.getClickCount() == 2) {
+                AnchorPane ap = (AnchorPane) event.getSource();
+                File file = (File) ap.getUserData();
+                if (file.isDirectory()) {
+                    navigationPathBar.changePath(subFile.getAbsolutePath(), true, true);
+                } else if (file.isFile()) {
+
+                }
+            } else if (event.getClickCount() == 1) {
+                AnchorPane newSelected = (AnchorPane) event.getSource();
+                if (event.isShortcutDown()) {//ctrl的多选
+                    newSelected.setStyle("-fx-background-color: aquamarine");
+                    selectedOnes.add(newSelected);
+                } else if (event.isShiftDown()) { //shift的多选
+                    if (selectedOnes.isEmpty()) {
+                        newSelected.setStyle("-fx-background-color: aquamarine");
+                        selectedOnes.add(newSelected);
+
+                    } else {
+                        AnchorPane first = selectedOnes.get(0);
+
+                        if (selectedOnes.size() > 1) {
+                            for (int i = 1; i < selectedOnes.size(); i++) {
+                                AnchorPane toRemove = selectedOnes.get(i);
+                                toRemove.setStyle("");
+                            }
+                            selectedOnes.clear();
+                            selectedOnes.add(first);
+                        }
+
+                        boolean begin = false;
+                        int count = 0;
+                        for (AnchorPane toSelect : files) {
+                            if (!begin && (toSelect == first || toSelect == newSelected)) {
+                                begin = true;
+                            }
+
+                            if (begin) {
+                                toSelect.setStyle("-fx-background-color: aquamarine");
+                                selectedOnes.add(toSelect);
+                                count++;
+                            }
+                            if (toSelect == first && toSelect == newSelected) {
+                                break;
+                            }
+                            if (count > 1 && (toSelect == first || toSelect == newSelected)) {
+                                break;
+                            }
+                        }
+                    }
+                } else {//没有按键盘
+                    if (!selectedOnes.isEmpty()) {
+                        selectedOnes.forEach(e -> e.setStyle(""));
+                    }
+                    selectedOnes.clear();
+
+                    newSelected.setStyle("-fx-background-color: aquamarine");
+                    selectedOnes.add(newSelected);
+                }
+            }
+
+            event.consume();
+        }
+
     }
 
 

@@ -1,6 +1,7 @@
 package com.tiance.jexplorer.layout;
 
 import com.tiance.jexplorer.config.PopularFolder;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -19,18 +20,20 @@ import java.util.List;
 @Component
 public class GeneralFolder extends VBox {
 
-    @Autowired
     private NavigationPathBar navigationPathBar;
 
+    private SimpleBooleanProperty toComputer = new SimpleBooleanProperty(false);
 
-    public GeneralFolder() {
+    @Autowired
+    public GeneralFolder(NavigationPathBar navigationPathBar) {
+        this.navigationPathBar = navigationPathBar;
+
         this.setStyle("-fx-background-color: rgba(209,255,248,0.07)");
         this.setPrefWidth(250d);
         this.setMinWidth(100d);
         this.setMaxWidth(300d);
 
         this.setAlignment(Pos.TOP_LEFT);
-//        this.setSpacing(6d);
         this.setPadding(new Insets(20, 10, 30, 10));
 
         //计算机, 特殊的全展现界面
@@ -83,7 +86,14 @@ public class GeneralFolder extends VBox {
 
         label.setStyle("-fx-background-color: rgba(209,255,248,0.07)");
         label.prefWidthProperty().bind(this.widthProperty());
-        label.setOnMouseClicked((event) -> navigationPathBar.changePath(folderPath, true));
+        if (folderPath.equals(NavigationPathBar._COMPUTER)) {
+            label.setOnMouseClicked(e -> {
+                toComputer.setValue(true);
+            });
+        } else {
+            label.setOnMouseClicked(event -> navigationPathBar.changePath(folderPath, true, true));
+            toComputer.setValue(false);
+        }
 
         label.setOnMouseEntered((event) -> {
             label.setStyle("-fx-background-color: #c2ff07; -fx-text-fill: whitesmoke;");
@@ -93,4 +103,10 @@ public class GeneralFolder extends VBox {
         });
         return label;
     }
+
+    public SimpleBooleanProperty toComputerProperty() {
+        return toComputer;
+    }
+
+
 }

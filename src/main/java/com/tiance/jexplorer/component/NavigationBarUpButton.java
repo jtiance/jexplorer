@@ -36,8 +36,8 @@ public class NavigationBarUpButton extends NavigationBarButton {
         this.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                if(curPath !=null && !curPath.getName().equals("")) {
-                NavigationBarUpButton.this.navigationPathBar.changePath(curPath.getParent(), true);
+                if (curPath != null && !curPath.getName().equals("")) {
+                    NavigationBarUpButton.this.navigationPathBar.changePath(curPath.getParent(), true, true);
 
                 }
             }
