@@ -2,6 +2,7 @@ package com.tiance.jexplorer.layout;
 
 import com.tiance.jexplorer.config.FileDisplaySizeMapper;
 import com.tiance.jexplorer.config.PreferenceConfig;
+import com.tiance.jexplorer.util.FileDisplayUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -51,6 +52,7 @@ public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> 
         this.setPadding(new Insets(20));
         this.setHgap(40);
         this.setVgap(60);
+        this.setStyle("-fx-background-color: white");
 
         this.setOnMouseClicked(this);
 
@@ -92,24 +94,25 @@ public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> 
                     AnchorPane ap = new AnchorPane();
                     ap.setUserData(subFile);
                     ap.setPrefWidth(imageDisplaySize);
+                    ap.setPrefHeight(imageDisplaySize);
                     ImageView iv;
                     if (subFile.isDirectory()) {
                         String img = subFile.canRead() ? "imgs/item/folder.png" : "imgs/item/folder_locked.png";
                         InputStream is = this.getClass().getClassLoader().getResourceAsStream(img);
-                        iv = new ImageView(new Image(is, imageDisplaySize, imageDisplaySize, true, false));
+                        iv = new ImageView(new Image(is, imageDisplaySize, imageDisplaySize, true, true));
                     } else {
-                        InputStream is = this.getClass().getClassLoader().getResourceAsStream("imgs/item/file.png");
-                        iv = new ImageView(new Image(is, imageDisplaySize, imageDisplaySize, true, false));
+                        iv = FileDisplayUtil.getImageView(subFile, imageDisplaySize);
                     }
+
                     ap.getChildren().add(iv);
-                    AnchorPane.setTopAnchor(iv, imageCorner);
-                    AnchorPane.setLeftAnchor(iv, imageCorner);
+                    AnchorPane.setTopAnchor(iv, (imageDisplaySize - iv.getImage().getHeight()) / 2);
+                    AnchorPane.setLeftAnchor(iv, (fileDisplaySize - iv.getImage().getWidth()) / 2);
 
                     Text text = new Text(subFile.getName());
                     text.setWrappingWidth(fileDisplaySize);
                     text.setTextAlignment(TextAlignment.CENTER);
                     ap.getChildren().add(text);
-                    AnchorPane.setTopAnchor(text, imageDisplaySize + 10);
+                    AnchorPane.setTopAnchor(text, imageDisplaySize+10);
 
                     ap.setOnMouseClicked(new MouseClickEventHandler(FileBlockBody.this.navigationPathBar, subFile, selectedOnes, FileBlockBody.this.files));
 

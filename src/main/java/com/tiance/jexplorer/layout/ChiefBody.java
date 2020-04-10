@@ -113,7 +113,7 @@ public class ChiefBody extends VBox {
         ap.setPrefWidth(imageDisplaySize);
 
         InputStream is = this.getClass().getClassLoader().getResourceAsStream(imgPath);
-        ImageView iv = new ImageView(new Image(is, imageDisplaySize, imageDisplaySize, true, true));
+        ImageView iv = new ImageView(new Image(is, imageDisplaySize, imageDisplaySize, false, true));
 
         ap.getChildren().add(iv);
         AnchorPane.setTopAnchor(iv, imageCorner);
