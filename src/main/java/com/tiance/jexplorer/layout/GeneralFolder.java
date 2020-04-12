@@ -19,11 +19,11 @@ import java.util.List;
 @Component
 public class GeneralFolder extends VBox {
 
-    private NavigationPathBar navigationPathBar;
+    private NavigationBar navigationBar;
 
     @Autowired
-    public GeneralFolder(NavigationPathBar navigationPathBar) {
-        this.navigationPathBar = navigationPathBar;
+    public GeneralFolder(NavigationBar navigationBar) {
+        this.navigationBar = navigationBar;
 
         this.setStyle("-fx-background-color: rgba(209,255,248,0.07)");
         this.setPrefWidth(250d);
@@ -84,7 +84,7 @@ public class GeneralFolder extends VBox {
         label.setStyle("-fx-background-color: rgba(209,255,248,0.07)");
         label.prefWidthProperty().bind(this.widthProperty());
         label.setOnMouseClicked(e -> {
-            navigationPathBar.changePath(folderPath, true, true);
+            this.navigationBar.getCurNavigationPathBar().changePath(folderPath, true, true);
         });
 
         label.setOnMouseEntered((event) -> {

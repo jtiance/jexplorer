@@ -1,29 +1,36 @@
 package com.tiance.jexplorer.component;
 
+import com.tiance.jexplorer.layout.NavigationBar;
 import com.tiance.jexplorer.layout.NavigationPathBar;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
-import org.springframework.stereotype.Component;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 
-@Component
 public class NavigationBarUpButton extends NavigationBarButton {
-
-    private NavigationPathBar navigationPathBar;
 
     private File curPath;
 
-    public NavigationBarUpButton(NavigationPathBar navigationPathBar) {
+    NavigationPathBar existingNavigationPathBar;
+
+    private PropertyChangeListener propertyChangeListener;
+
+    public NavigationBarUpButton() {
         setText("^");
 
-        this.navigationPathBar = navigationPathBar;
-
         render("/");
+    }
 
-        this.navigationPathBar.addPathChangeListener(new PropertyChangeListener() {
+    public void relistenPathChange(NavigationPathBar curNavigationPathBar) {
+
+        if (existingNavigationPathBar != null) {
+            existingNavigationPathBar.removePathChangeListener(propertyChangeListener);
+        }
+
+        render(curNavigationPathBar.getPath());
+        curNavigationPathBar.addPathChangeListener(this.propertyChangeListener = new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
 
@@ -36,12 +43,13 @@ public class NavigationBarUpButton extends NavigationBarButton {
                 render(newValue);
             }
         });
+        existingNavigationPathBar = curNavigationPathBar;
 
         this.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 if (curPath != null && !curPath.getName().equals("")) {
-                    NavigationBarUpButton.this.navigationPathBar.changePath(curPath.getParent(), true, true);
+                    curNavigationPathBar.changePath(curPath.getParent(), true, true);
 
                 }
             }

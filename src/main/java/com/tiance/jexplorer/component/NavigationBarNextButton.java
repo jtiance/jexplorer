@@ -1,39 +1,40 @@
 package com.tiance.jexplorer.component;
 
+import com.tiance.jexplorer.layout.NavigationBar;
 import com.tiance.jexplorer.layout.NavigationPathBar;
-import org.springframework.stereotype.Component;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-@Component
 public class NavigationBarNextButton extends NavigationBarButton {
 
-    private NavigationPathBar navigationPathBar;
+    private NavigationPathBar existingNavigationPathBar;
 
-    public NavigationBarNextButton(NavigationPathBar navigationPathBar) {
+    private PropertyChangeListener propertyChangeListener;
+
+    public NavigationBarNextButton() {
         setText(">");
-        this.navigationPathBar = navigationPathBar;
+    }
 
-        render();
+    public void relistenPathChange(NavigationPathBar curNavigationPathBar) {
 
-        navigationPathBar.addPathChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                render();
-            }
-        });
+        if (existingNavigationPathBar != null) {
+            existingNavigationPathBar.removePathChangeListener(propertyChangeListener);
+        }
+
+        render(curNavigationPathBar);
+        curNavigationPathBar.addPathChangeListener(this.propertyChangeListener = evt -> render(curNavigationPathBar));
+        existingNavigationPathBar = curNavigationPathBar;
 
         this.setOnMouseClicked(e -> {
-            if (this.navigationPathBar.hasValidNexts()) {
-                String s = this.navigationPathBar.popNext();
-                this.navigationPathBar.changePath(s, true, false);
+            if (curNavigationPathBar.hasValidNexts()) {
+                String s = curNavigationPathBar.popNext();
+                curNavigationPathBar.changePath(s, true, false);
             }
         });
     }
 
-    private void render() {
-        boolean valid = this.navigationPathBar.hasValidNexts();
+    private void render(NavigationPathBar curNavigationPathBar) {
+        boolean valid = curNavigationPathBar.hasValidNexts();
 
         if (valid) {
             this.setDisabled(false);

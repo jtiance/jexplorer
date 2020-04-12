@@ -9,16 +9,19 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
 @Component
+@Scope(value = "prototype")
 public class NavigationPathBar extends HBox {
 
     private static final Logger logger = LoggerFactory.getLogger(NavigationPathBar.class);
@@ -69,7 +72,7 @@ public class NavigationPathBar extends HBox {
 
                 NavigationPathBar.this.getChildren().setAll(btnList.toArray(new Button[btnList.size()]));
 
-                if(NavigationPathBar.this.clearNext) {
+                if (NavigationPathBar.this.clearNext) {
                     NavigationPathBar.this.nextPaths.clear();
                 }
             }
@@ -176,8 +179,29 @@ public class NavigationPathBar extends HBox {
         pcs.firePropertyChange(new PropertyChangeEvent(this, "path", this.path, path));
     }
 
+    public String getPath() {
+        return path.get();
+    }
+
+    public String getFolderName() {
+        if (path.get().equals(_COMPUTER)) {
+            return "计算机";
+        } else {
+            File file = new File(path.get());
+            if (file.getName().equals("")) {
+                return "根目录";
+            } else {
+                return file.getName();
+            }
+        }
+    }
+
     public void addPathChangeListener(PropertyChangeListener propertyChangeListener) {
         pcs.addPropertyChangeListener("path", propertyChangeListener);
+    }
+
+    public void removePathChangeListener(PropertyChangeListener propertyChangeListener) {
+        pcs.removePropertyChangeListener("path", propertyChangeListener);
     }
 
 

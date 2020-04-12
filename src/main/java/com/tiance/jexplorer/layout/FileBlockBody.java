@@ -16,6 +16,7 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.beans.PropertyChangeEvent;
@@ -25,9 +26,10 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 @Component
+@Scope(value = "prototype")
 public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> {
 
-    private NavigationPathBar navigationPathBar;
+    private NavigationBar navigationBar;
 
     //当前路径下所有文件
     private ObservableList<AnchorPane> files = FXCollections.observableArrayList();
@@ -47,8 +49,9 @@ public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> 
     }
 
     @Autowired
-    public FileBlockBody(NavigationPathBar navigationPathBar) {
-        this.navigationPathBar = navigationPathBar;
+    public FileBlockBody(NavigationBar navigationBar) {
+
+        this.navigationBar = navigationBar;
         this.setPadding(new Insets(20));
         this.setHgap(40);
         this.setVgap(60);
@@ -56,7 +59,7 @@ public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> 
 
         this.setOnMouseClicked(this);
 
-        navigationPathBar.addPathChangeListener(new PropertyChangeListener() {
+        this.navigationBar.getCurNavigationPathBar().addPathChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 if (evt.getNewValue().equals(NavigationPathBar._COMPUTER)) {
@@ -114,7 +117,7 @@ public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> 
                     ap.getChildren().add(text);
                     AnchorPane.setTopAnchor(text, imageDisplaySize+10);
 
-                    ap.setOnMouseClicked(new MouseClickEventHandler(FileBlockBody.this.navigationPathBar, subFile, selectedOnes, FileBlockBody.this.files));
+                    ap.setOnMouseClicked(new MouseClickEventHandler(FileBlockBody.this.navigationBar.getCurNavigationPathBar(), subFile, selectedOnes, FileBlockBody.this.files));
 
                     FileBlockBody.this.files.add(ap);
 

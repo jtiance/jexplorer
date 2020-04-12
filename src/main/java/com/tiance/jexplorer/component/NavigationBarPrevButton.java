@@ -1,47 +1,39 @@
 package com.tiance.jexplorer.component;
 
 import com.tiance.jexplorer.layout.NavigationPathBar;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-@Component
 public class NavigationBarPrevButton extends NavigationBarButton {
 
-    private NavigationPathBar navigationPathBar;
+    private NavigationPathBar existingNavigationPathBar;
 
-    private NavigationBarNextButton navigationBarNextButton;
+    private PropertyChangeListener propertyChangeListener;
 
-    @Autowired
-    public NavigationBarPrevButton(NavigationPathBar navigationPathBar,
-                                   NavigationBarNextButton navigationBarNextButton) {
+    public NavigationBarPrevButton() {
         setText("<");
+    }
 
-        this.navigationPathBar = navigationPathBar;
-        this.navigationBarNextButton = navigationBarNextButton;
+    public void relistenPathChange(NavigationPathBar curNavigationPathBar) {
 
-        render();
-
-        this.navigationPathBar.addPathChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                render();
-            }
-        });
+        if (existingNavigationPathBar != null) {
+            existingNavigationPathBar.removePathChangeListener(propertyChangeListener);
+        }
+        render(curNavigationPathBar);
+        curNavigationPathBar.addPathChangeListener(this.propertyChangeListener = evt -> render(curNavigationPathBar));
+        existingNavigationPathBar = curNavigationPathBar;
 
         this.setOnMouseClicked(e -> {
-            if (this.navigationPathBar.hasValidPrevs()) {
-                this.navigationPathBar.addCurPathToNext();
-                String s = this.navigationPathBar.popPrev();
-                this.navigationPathBar.changePath(s, false, false);
+            if (existingNavigationPathBar.hasValidPrevs()) {
+                existingNavigationPathBar.addCurPathToNext();
+                String s = existingNavigationPathBar.popPrev();
+                existingNavigationPathBar.changePath(s, false, false);
             }
         });
     }
 
-    private void render() {
-        boolean valid = this.navigationPathBar.hasValidPrevs();
+    private void render(NavigationPathBar curNavigationPathBar) {
+        boolean valid = curNavigationPathBar == null ? false : curNavigationPathBar.hasValidPrevs();
 
         if (valid) {
             this.setDisabled(false);

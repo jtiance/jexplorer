@@ -18,6 +18,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -27,20 +28,17 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 @Component
+@Scope(value = "prototype")
 public class ChiefBody extends VBox {
 
     private FlowPane foldersInHome = new FlowPane();//主目录的文件夹面板
     private FlowPane disks = new FlowPane(); //磁盘面板
 
-    private PreferenceConfig preferenceConfig;
-
-    private NavigationPathBar navigationPathBar;
+    private NavigationBar navigationBar;
 
     @Autowired
-    public ChiefBody(NavigationPathBar navigationPathBar,
-                     PreferenceConfig preferenceConfig) {
-        this.navigationPathBar = navigationPathBar;
-        this.preferenceConfig = preferenceConfig;
+    public ChiefBody(NavigationBar navigationBar) {
+        this.navigationBar = navigationBar;
 
         loadPopularFolders();
         TitledPane myFolder = new TitledPane();
@@ -125,7 +123,7 @@ public class ChiefBody extends VBox {
         ap.getChildren().add(text);
         AnchorPane.setTopAnchor(text, imageDisplaySize + 20);
 
-        ap.setOnMouseClicked(new MouseClickEventHandler(this, navigationPathBar, file));
+        ap.setOnMouseClicked(new MouseClickEventHandler(this, navigationBar.getCurNavigationPathBar(), file));
         return ap;
     }
 
@@ -152,6 +150,7 @@ public class ChiefBody extends VBox {
 
             } else if (event.getClickCount() == 1) {
                 ObservableList<Node> folders = chiefBody.foldersInHome.getChildren();
+
                 ObservableList<Node> disks = chiefBody.disks.getChildren();
 
                 for (Node node : folders) {
