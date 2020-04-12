@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
@@ -34,21 +35,23 @@ public class NavigationBar extends HBox {
 
     private Logger logger = LoggerFactory.getLogger(NavigationBar.class);
 
-    public NavigationBar() {
+    @Autowired
+    public NavigationBar(NavigationBarPrevButton navigationBarPrevButton,
+                         NavigationBarUpButton navigationBarUpButton,
+                         NavigationBarNextButton navigationBarNextButton ) {
+        this.navigationBarPrevButton = navigationBarPrevButton;
+        this.navigationBarNextButton = navigationBarNextButton;
+        this.navigationBarUpButton = navigationBarUpButton;
+
+        this.addChildren();
+
         setStyle("-fx-background-color: #cfced1");
         setPrefHeight(40d);
 
         setAlignment(Pos.CENTER_LEFT);
     }
 
-    public void addChildren(NavigationBarPrevButton navigationBarPrevButton,
-                            NavigationBarUpButton navigationBarUpButton,
-                            NavigationBarNextButton navigationBarNextButton) {
-
-        this.navigationBarPrevButton = navigationBarPrevButton;
-        this.navigationBarNextButton = navigationBarNextButton;
-        this.navigationBarUpButton = navigationBarUpButton;
-
+    public void addChildren() {
         ImageView icon = getIcon();
         this.getChildren().addAll(icon, navigationBarPrevButton, navigationBarUpButton, navigationBarNextButton);
 

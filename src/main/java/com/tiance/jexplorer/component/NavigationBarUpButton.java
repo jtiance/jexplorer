@@ -4,11 +4,13 @@ import com.tiance.jexplorer.layout.NavigationBar;
 import com.tiance.jexplorer.layout.NavigationPathBar;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
+import org.springframework.stereotype.Component;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 
+@Component
 public class NavigationBarUpButton extends NavigationBarButton {
 
     private File curPath;

@@ -48,11 +48,7 @@ public class MainInterface extends BorderPane {
         this.preferenceConfig = preferenceConfig;
         this.navigationBar = navigationBar;
 
-        NavigationBarPrevButton navigationBarPrevButton = new NavigationBarPrevButton();
-        NavigationBarUpButton navigationBarUpButton = new NavigationBarUpButton();
-        NavigationBarNextButton navigationBarNextButton = new NavigationBarNextButton();
 
-        navigationBar.addChildren(navigationBarPrevButton, navigationBarUpButton, navigationBarNextButton);
 
         this.setCenter(tabPane);
         tabPane.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {

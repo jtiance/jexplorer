@@ -1,9 +1,11 @@
 package com.tiance.jexplorer.component;
 
 import com.tiance.jexplorer.layout.NavigationPathBar;
+import org.springframework.stereotype.Component;
 
 import java.beans.PropertyChangeListener;
 
+@Component
 public class NavigationBarPrevButton extends NavigationBarButton {
 
     private NavigationPathBar existingNavigationPathBar;
