@@ -185,13 +185,13 @@ public class NavigationPathBar extends HBox {
 
     public String getFolderName() {
         if (path.get().equals(_COMPUTER)) {
-            return "计算机";
+            return "   计算机   ";
         } else {
             File file = new File(path.get());
             if (file.getName().equals("")) {
-                return "根目录";
+                return "   根目录   ";
             } else {
-                return file.getName();
+                return "   "+ file.getName()+ "   ";
             }
         }
     }

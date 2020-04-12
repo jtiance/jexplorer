@@ -128,7 +128,7 @@ public class MainInterface extends BorderPane {
             }
         });
 
-        Tab tab = new Tab("计算机");
+        Tab tab = new Tab("   计算机   ");
         tabPane.getTabs().add(tab);
         tabPane.getSelectionModel().select(tab);
         tab.setUserData(navigationPathBar);
