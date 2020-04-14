@@ -1,7 +1,11 @@
 package com.tiance.jexplorer.layout;
 
+import com.tiance.jexplorer.JexplorerApplication;
+import com.tiance.jexplorer.UI;
 import com.tiance.jexplorer.config.FileDisplaySizeMapper;
 import com.tiance.jexplorer.config.PreferenceConfig;
+import com.tiance.jexplorer.menu.right.CommonContextMenu;
+import com.tiance.jexplorer.service.FileService;
 import com.tiance.jexplorer.util.FileDisplayUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,6 +13,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -40,6 +45,8 @@ public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> 
     @Autowired
     private PreferenceConfig preferenceConfig;
 
+    private FileService fileService;
+
 
     @Override
     public void handle(MouseEvent event) {
@@ -49,9 +56,10 @@ public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> 
     }
 
     @Autowired
-    public FileBlockBody(NavigationBar navigationBar) {
+    public FileBlockBody(NavigationBar navigationBar, FileService fileService) {
 
         this.navigationBar = navigationBar;
+        this.fileService = fileService;
         this.setPadding(new Insets(20));
         this.setHgap(40);
         this.setVgap(60);
@@ -87,7 +95,6 @@ public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> 
 
                 double fileDisplaySize = FileDisplaySizeMapper.getBlockSize(preferenceConfig.getFileDisplaySize());
                 double imageDisplaySize = fileDisplaySize * 0.8;
-                double imageCorner = fileDisplaySize * 0.1;
 
                 for (File subFile : subFiles) {
                     if (!preferenceConfig.isShowHidden() && subFile.isHidden()) {
@@ -115,19 +122,23 @@ public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> 
                     text.setWrappingWidth(fileDisplaySize);
                     text.setTextAlignment(TextAlignment.CENTER);
                     ap.getChildren().add(text);
-                    AnchorPane.setTopAnchor(text, imageDisplaySize+10);
+                    AnchorPane.setTopAnchor(text, imageDisplaySize + 10);
 
                     ap.setOnMouseClicked(new MouseClickEventHandler(FileBlockBody.this.navigationBar.getCurNavigationPathBar(), subFile, selectedOnes, FileBlockBody.this.files));
 
                     FileBlockBody.this.files.add(ap);
 
+                    ap.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
+                        @Override
+                        public void handle(ContextMenuEvent event) {
+                            CommonContextMenu c = new CommonContextMenu();
+                            c.show(UI.STAGE, event.getScreenX(), event.getScreenY());
+                        }
+                    });
+
                 }
 
-                FileBlockBody.this.
-
-                        getChildren().
-
-                        setAll(FileBlockBody.this.files);
+                FileBlockBody.this.getChildren().setAll(FileBlockBody.this.files);
             }
         });
     }
@@ -159,7 +170,8 @@ public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> 
                         navigationPathBar.changePath(subFile.getAbsolutePath(), true, true);
                     }
                 } else if (file.isFile()) {
-
+                    FileService fileService = JexplorerApplication.context.getBean(FileService.class);
+                    fileService.openFile(file);
                 }
             } else if (event.getClickCount() == 1) {
                 AnchorPane newSelected = (AnchorPane) event.getSource();
