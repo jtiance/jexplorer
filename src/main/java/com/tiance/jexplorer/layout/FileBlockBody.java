@@ -5,6 +5,7 @@ import com.tiance.jexplorer.UI;
 import com.tiance.jexplorer.config.FileDisplaySizeMapper;
 import com.tiance.jexplorer.config.PreferenceConfig;
 import com.tiance.jexplorer.menu.right.CommonContextMenu;
+import com.tiance.jexplorer.menu.right.SpaceContextMenu;
 import com.tiance.jexplorer.service.FileService;
 import com.tiance.jexplorer.util.FileDisplayUtil;
 import javafx.collections.FXCollections;
@@ -47,11 +48,17 @@ public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> 
 
     private FileService fileService;
 
+    @Autowired
+    private SpaceContextMenu spaceContextMenu;
+
 
     @Override
     public void handle(MouseEvent event) {
         if (event.getButton() == MouseButton.PRIMARY) {
             selectedOnes.forEach(e -> e.setStyle(""));
+//        } else if (event.getButton() == MouseButton.SECONDARY) {
+//            SpaceContextMenu scm = new SpaceContextMenu();
+//            scm.
         }
     }
 
@@ -66,6 +73,12 @@ public class FileBlockBody extends TilePane implements EventHandler<MouseEvent> 
         this.setStyle("-fx-background-color: white");
 
         this.setOnMouseClicked(this);
+        this.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
+            @Override
+            public void handle(ContextMenuEvent event) {
+                spaceContextMenu.show(UI.STAGE, event.getScreenX(), event.getScreenY());
+            }
+        });
 
         this.navigationBar.getCurNavigationPathBar().addPathChangeListener(new PropertyChangeListener() {
             @Override
