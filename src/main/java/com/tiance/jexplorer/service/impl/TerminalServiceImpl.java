@@ -26,8 +26,7 @@ public class TerminalServiceImpl implements TerminalService {
         NavigationPathBar curNavigationPathBar = navigationBar.getCurNavigationPathBar();
         String path = curNavigationPathBar.getPath();
         try {
-            logger.info("deepin-terminal -m normal -w \"" + path + "\" &");
-            Runtime.getRuntime().exec("  deepin-terminal -m normal -w \"" + path + "\" &", null, new File(path));
+            Runtime.getRuntime().exec("  deepin-terminal -m normal &", null, new File(path));
         } catch (IOException e) {
             logger.info("Error opening folder: {}", path, e);
         }
